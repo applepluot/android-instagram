@@ -48,7 +48,25 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
         if (!TextUtils.isEmpty(post.user.profilePictureUrl)) {
             Picasso.with(context).load(post.user.profilePictureUrl).into(holder.ivAvatar);
         }
-        holder.tvDate.setText(df.format(new Date(post.createdTime)));
+        long now = new Date().getTime();
+        long postDate = post.createdTime * 1000;
+        long diff = now - postDate;
+        long diffSeconds = diff / 1000;
+        long diffMinutes = diff / (60 * 1000);
+        long diffHours = diff / (60 * 60 * 1000);
+        long diffDays = diff / (60 * 60 * 1000 * 24);
+        String holderText = "";
+        String postDateString = df.format(new Date(post.createdTime * 1000));
+        if (diffDays > 0) {
+            holderText = diffDays + " days ago";
+        } else if (diffHours > 0) {
+            holderText = diffHours + " hours ago";
+        } else if (diffMinutes > 0) {
+            holderText = diffMinutes + " minutes ago";
+        } else {
+            holderText = diffSeconds + " seconds ago";
+        }
+        holder.tvDate.setText(holderText);
         Picasso.with(context).load(post.image.imageUrl).resize(DeviceDimensionsHelper.getDisplayWidth(context), 0)
                 .into(holder.ivImage);
         holder.tvLikes.setText("" + post.likesCount + " Likes");
